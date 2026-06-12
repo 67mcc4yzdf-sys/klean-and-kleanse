@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: `${business.businessName} | Professional Cleaning Services in ${business.city}`,
-  description: `Reliable house, office, deep cleaning, and move-out cleaning services in ${business.city}. Request a free quote today.`,
+  description: business.seoDescription,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
