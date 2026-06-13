@@ -17,6 +17,8 @@ export type Service = {
   icon: ServiceIconName;
   bestFor: string;
   planningNote: string;
+  pricingNote: string;
+  recurringAvailable: boolean;
   included: string[];
 };
 
@@ -35,7 +37,6 @@ export type BusinessConfig = {
   hero: {
     eyebrow: string;
     titlePrefix: string;
-    titleLocation: string;
     lead: string;
     supportingText: string;
     reassurance: string;
@@ -59,11 +60,33 @@ export type BusinessConfig = {
     eyebrow: string;
     title: string;
     description: string;
+    differentiator: string;
     signatureTitle: string;
     signatureText: string;
     reasons: string[];
   };
+  servicePromise: {
+    title: string;
+    text: string;
+  };
+  pricing: {
+    heading: string;
+    explanation: string;
+    recurringNote: string;
+  };
+  addOns: string[];
   process: { title: string; text: string }[];
+  reviewProof: {
+    rating?: string;
+    reviewCount?: string;
+    platform?: string;
+    fallbackLabel: string;
+    detail: string;
+    href: string;
+  };
+  quoteForm: {
+    endpoint?: string;
+  };
   serviceAreas: string[];
   services: Service[];
   trustBadges: string[];
@@ -77,9 +100,64 @@ export type BusinessConfig = {
     after: string;
   };
   socialLinks: { label: string; href: string }[];
+  legal: {
+    privacyContact: string;
+    lastUpdated: string;
+  };
 };
 
-export const business = {
+function validateBusinessConfig<T extends BusinessConfig>(config: T): T {
+  const requiredStrings = [
+    ["businessName", config.businessName],
+    ["logoText", config.logoText],
+    ["city", config.city],
+    ["country", config.country],
+    ["phone", config.phone],
+    ["phoneHref", config.phoneHref],
+    ["email", config.email],
+    ["seoDescription", config.seoDescription],
+  ] as const;
+
+  for (const [field, value] of requiredStrings) {
+    if (!value.trim()) throw new Error(`Business configuration field "${field}" cannot be empty.`);
+  }
+
+  if (!/^\+[\d]{8,15}$/.test(config.phoneHref)) {
+    throw new Error('Business configuration "phoneHref" must use international format, for example +14165550184.');
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.email)) {
+    throw new Error('Business configuration "email" is invalid.');
+  }
+
+  for (const [field, value] of [["primaryColor", config.primaryColor], ["secondaryColor", config.secondaryColor]] as const) {
+    if (!/^#[0-9a-f]{6}$/i.test(value)) throw new Error(`Business configuration "${field}" must be a six-digit hex color.`);
+  }
+
+  if (!config.services.length) throw new Error("At least one service is required.");
+  if (config.services.length < 4) throw new Error("At least four services are required for the featured homepage grid.");
+  if (new Set(config.services.map((service) => service.title)).size !== config.services.length) {
+    throw new Error("Service titles must be unique so quote links can select the correct service.");
+  }
+  if (!config.addOns.length) throw new Error("At least one optional add-on is required.");
+
+  for (const [field, path] of Object.entries(config.images)) {
+    if (!path.startsWith("/")) throw new Error(`Image path "${field}" must begin with "/".`);
+  }
+
+  const proofValues = [config.reviewProof.rating, config.reviewProof.reviewCount, config.reviewProof.platform];
+  if (proofValues.some(Boolean) && !proofValues.every(Boolean)) {
+    throw new Error("Review rating, count, and platform must either all be supplied or all be omitted.");
+  }
+
+  if (config.quoteForm.endpoint && !/^https:\/\//i.test(config.quoteForm.endpoint)) {
+    throw new Error("Quote form endpoint must use HTTPS.");
+  }
+
+  return config;
+}
+
+export const business = validateBusinessConfig({
   businessName: "FreshNest Cleaning",
   logoText: "FreshNest",
   tagline: "Reliable cleaning services for homes, offices, and move-outs.",
@@ -94,7 +172,6 @@ export const business = {
   hero: {
     eyebrow: "A fresher space starts here",
     titlePrefix: "Professional Cleaning Services in",
-    titleLocation: "Toronto",
     lead: "Reliable house and office cleaning for busy homeowners, renters, and local businesses.",
     supportingText: "Get a free quote today and enjoy a cleaner space without spending your weekend cleaning.",
     reassurance: "Local service. Clear estimates. No complicated packages.",
@@ -116,25 +193,51 @@ export const business = {
   },
   whyChooseUs: {
     eyebrow: "Why FreshNest",
-    title: "More than a clean surface. A calmer place to land.",
-    description: "We help you come back to a space that feels fresh, calm, and ready to enjoy.",
-    signatureTitle: "Friendly, thoughtful service",
-    signatureText: "Built around your home and routine",
-    reasons: ["Reliable arrival windows", "Custom cleaning plans", "Friendly trained team", "Safe products available", "Clear communication", "Satisfaction-focused service"],
+    title: "A cleaning plan built around your actual space.",
+    description: "We confirm priorities before the visit, explain what is included, and keep communication straightforward from quote to follow-up.",
+    differentiator: "One point of contact, a written scope, and cleaning priorities agreed before work begins.",
+    signatureTitle: "Clear scope before cleaning",
+    signatureText: "Fewer assumptions. Better visits.",
+    reasons: ["Confirmed arrival window", "Room-by-room priorities", "Supplies discussed in advance", "Recurring plans available", "Clear communication", "Prompt concern follow-up"],
   },
+  servicePromise: {
+    title: "If something was missed, tell us promptly.",
+    text: "We will review the concern with you and agree on a practical next step. Replace this wording with the business's confirmed re-clean or satisfaction policy before launch.",
+  },
+  pricing: {
+    heading: "Straightforward quotes based on the work",
+    explanation: "Pricing depends on the size and condition of the space, service type, access, and any selected extras. We confirm the scope and price before the visit.",
+    recurringNote: "Recurring customers may receive more consistent scheduling and pricing after the first visit. Confirm the real business policy before publishing a discount.",
+  },
+  addOns: ["Inside oven", "Inside refrigerator", "Inside cabinets", "Interior windows", "Linen change"],
   process: [
     { title: "Request your free quote", text: "Tell us about your space and what you need." },
     { title: "Choose your cleaning plan", text: "We’ll help you select the right service and schedule." },
     { title: "Enjoy a cleaner space", text: "Come back to a home or workplace that feels refreshed." },
   ],
+  reviewProof: {
+    rating: undefined,
+    reviewCount: undefined,
+    platform: undefined,
+    fallbackLabel: "5-star client feedback",
+    detail: "Read customer stories",
+    href: "#reviews",
+    // Add verified values for the real business, for example:
+    // rating: "4.9",
+    // reviewCount: "127 reviews",
+    // platform: "Google",
+  },
+  quoteForm: {
+    endpoint: undefined,
+  },
   serviceAreas: ["Downtown Toronto", "North York", "Etobicoke", "Scarborough", "East York", "York", "The Beaches", "High Park"],
   services: [
-    { title: "House Cleaning", description: "Routine care that keeps your home fresh, comfortable, and ready for the week.", icon: "home", bestFor: "Busy households and recurring upkeep", planningNote: "Weekly, biweekly, or a schedule that works for your home.", included: ["Kitchen and bathroom clean", "Dusting and surfaces", "Floors vacuumed and mopped", "Beds made on request"] },
-    { title: "Deep Cleaning", description: "A detailed top-to-bottom reset for spaces that need extra attention.", icon: "sparkles", bestFor: "Seasonal resets and first-time visits", planningNote: "Extra time for buildup, edges, fixtures, and overlooked areas.", included: ["Detailed kitchen clean", "Baseboards and buildup", "Fixtures and high-touch areas", "Thorough floor care"] },
-    { title: "Move-In / Move-Out Cleaning", description: "A comprehensive clean that helps make moving day simpler.", icon: "truck", bestFor: "Renters, owners, and property managers", planningNote: "A detailed empty-home clean before the keys change hands.", included: ["Inside empty cabinets", "Appliance exteriors", "Bathrooms sanitized", "Floors and baseboards"] },
-    { title: "Office Cleaning", description: "Dependable workplace cleaning around your team and operating hours.", icon: "building", bestFor: "Small offices, studios, and shared spaces", planningNote: "Quiet, reliable cleaning around your operating hours.", included: ["Workstations and common areas", "Kitchen and washrooms", "Waste removal", "Flexible schedules"] },
-    { title: "Airbnb / Rental Cleaning", description: "Responsive turnovers that help every guest arrive to a welcoming space.", icon: "key", bestFor: "Hosts who need dependable turnovers", planningNote: "A consistent reset between guests, with finishing touches checked.", included: ["Full turnover clean", "Linen change on request", "Supply check", "Photo-ready finishing"] },
-    { title: "Post-Construction Cleaning", description: "Careful dust and debris removal after renovations or new construction.", icon: "hardHat", bestFor: "Renovations and newly finished spaces", planningNote: "Fine dust and residue removed before you settle back in.", included: ["Fine dust removal", "Fixtures and surfaces", "Interior glass", "Final floor clean"] },
+    { title: "House Cleaning", description: "Routine care that keeps your home fresh, comfortable, and ready for the week.", icon: "home", bestFor: "Busy households and recurring upkeep", planningNote: "Weekly, biweekly, or a schedule that works for your home.", pricingNote: "Custom quote after size and priorities are confirmed", recurringAvailable: true, included: ["Kitchen and bathroom clean", "Dusting and surfaces", "Floors vacuumed and mopped", "Beds made on request"] },
+    { title: "Deep Cleaning", description: "A detailed top-to-bottom reset for spaces that need extra attention.", icon: "sparkles", bestFor: "Seasonal resets and first-time visits", planningNote: "Extra time for buildup, edges, fixtures, and overlooked areas.", pricingNote: "Custom quote based on condition and selected extras", recurringAvailable: false, included: ["Detailed kitchen clean", "Baseboards and buildup", "Fixtures and high-touch areas", "Thorough floor care"] },
+    { title: "Move-In / Move-Out Cleaning", description: "A comprehensive clean that helps make moving day simpler.", icon: "truck", bestFor: "Renters, owners, and property managers", planningNote: "A detailed empty-home clean before the keys change hands.", pricingNote: "Custom quote based on size and whether the space is empty", recurringAvailable: false, included: ["Inside empty cabinets", "Appliance exteriors", "Bathrooms sanitized", "Floors and baseboards"] },
+    { title: "Office Cleaning", description: "Dependable workplace cleaning around your team and operating hours.", icon: "building", bestFor: "Small offices, studios, and shared spaces", planningNote: "Quiet, reliable cleaning around your operating hours.", pricingNote: "Site-specific quote after frequency and scope are confirmed", recurringAvailable: true, included: ["Workstations and common areas", "Kitchen and washrooms", "Waste removal", "Flexible schedules"] },
+    { title: "Airbnb / Rental Cleaning", description: "Responsive turnovers that help every guest arrive to a welcoming space.", icon: "key", bestFor: "Hosts who need dependable turnovers", planningNote: "A consistent reset between guests, with finishing touches checked.", pricingNote: "Custom quote based on turnover scope and linen needs", recurringAvailable: true, included: ["Full turnover clean", "Linen change on request", "Supply check", "Photo-ready finishing"] },
+    { title: "Post-Construction Cleaning", description: "Careful dust and debris removal after renovations or new construction.", icon: "hardHat", bestFor: "Renovations and newly finished spaces", planningNote: "Fine dust and residue removed before you settle back in.", pricingNote: "Site-specific quote after the work area is reviewed", recurringAvailable: false, included: ["Fine dust removal", "Fixtures and surfaces", "Interior glass", "Final floor clean"] },
   ],
   trustBadges: ["Free estimates", "Locally owned", "Flexible scheduling", "Satisfaction-focused"],
   reviews: [
@@ -161,6 +264,10 @@ export const business = {
     { label: "Facebook", href: "https://facebook.com" },
     { label: "Instagram", href: "https://instagram.com" },
   ],
-} satisfies BusinessConfig;
+  legal: {
+    privacyContact: "hello@freshnestcleaning.com",
+    lastUpdated: "June 13, 2026",
+  },
+} satisfies BusinessConfig);
 
 export type Business = typeof business;

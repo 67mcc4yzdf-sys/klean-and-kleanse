@@ -10,6 +10,6 @@ export default function Footer() {
       <div><h3 className="font-bold text-white">Services</h3><ul className="mt-5 space-y-3 text-sm">{business.services.slice(0, 5).map(s => <li key={s.title}><Link href="/services" className="hover:text-white">{s.title}</Link></li>)}</ul></div>
       <div><h3 className="font-bold text-white">Service Areas</h3><ul className="mt-5 grid grid-cols-2 gap-3 text-sm">{business.serviceAreas.slice(0, 6).map(a => <li key={a}><Link href="/service-areas" className="hover:text-white">{a}</Link></li>)}</ul></div>
     </div>
-    <div className="flex flex-col gap-3 pt-7 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} {business.businessName}. All rights reserved.</p><p>Serving {business.city}, {business.country}</p></div>
+    <div className="flex flex-col gap-3 pt-7 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} {business.businessName}. All rights reserved.</p><div className="flex flex-wrap gap-4"><Link href="/privacy" className="hover:text-white">Privacy Policy</Link><Link href="/terms" className="hover:text-white">Terms</Link><span>Serving {business.city}, {business.country}</span></div></div>
   </div></footer>;
 }

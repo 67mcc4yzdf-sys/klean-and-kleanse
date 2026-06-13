@@ -33,6 +33,11 @@ export default function ServicesPage() {
       </div>
     </section>
 
+    <section className="border-b border-slate-200 bg-slate-50 py-14"><div className="shell grid gap-8 lg:grid-cols-[1fr_.8fr]">
+      <div><span className="eyebrow">Pricing approach</span><h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-.035em]">{business.pricing.heading}</h2><p className="mt-4 max-w-2xl leading-7 text-slate-600">{business.pricing.explanation}</p><p className="mt-3 text-sm leading-6 text-slate-500">{business.pricing.recurringNote}</p></div>
+      <div className="border-l-2 border-[var(--secondary)] bg-white p-6"><h3 className="font-extrabold">Optional add-ons</h3><ul className="mt-4 grid gap-2 sm:grid-cols-2">{business.addOns.map(item => <li key={item} className="flex gap-2 text-sm font-semibold text-slate-700"><Check size={16} className="shrink-0 text-[var(--secondary)]" strokeWidth={3} />{item}</li>)}</ul></div>
+    </div></section>
+
     <section className="section"><div className="shell">
       <div className="mb-12 max-w-2xl"><span className="eyebrow">What we clean</span><h2 className="font-[var(--font-display)] text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">Choose the closest fit. We can adjust the details.</h2></div>
       <div className="divide-y divide-slate-200 border-y border-slate-200">{business.services.map((service, index) => <Reveal key={service.title} delay={index * .035}><article className="grid gap-6 py-9 md:grid-cols-[auto_1fr_1fr] md:items-start md:gap-8">
@@ -42,6 +47,8 @@ export default function ServicesPage() {
           <p className="mt-3 leading-7 text-slate-600">{service.description}</p>
           <p className="mt-4 text-sm font-bold text-[var(--primary)]">Best for: {service.bestFor}</p>
           <p className="mt-1 text-sm leading-6 text-slate-500">{service.planningNote}</p>
+          <p className="mt-4 text-sm font-extrabold text-slate-800">{service.pricingNote}</p>
+          {service.recurringAvailable && <p className="mt-2 text-xs font-bold uppercase tracking-[.1em] text-emerald-700">Recurring plans available</p>}
         </div>
         <div className="md:border-l md:border-slate-200 md:pl-8">
           <h3 className="text-xs font-extrabold uppercase tracking-[.14em] text-slate-500">A typical visit can include</h3>
