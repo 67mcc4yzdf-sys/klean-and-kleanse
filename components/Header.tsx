@@ -7,8 +7,7 @@ import { Menu, Phone, Sparkles, X } from "lucide-react";
 import { business } from "@/lib/business";
 
 const links = [
-  ["Services", "/services"], ["About", "/about"], ["Service Areas", "/service-areas"],
-  ["Reviews", "/#reviews"], ["Contact", "/contact"]
+  ["Services", "/services"], ["About", "/about"], ["Contact", "/contact"]
 ];
 
 export default function Header() {
@@ -24,7 +23,7 @@ export default function Header() {
     <>
       <header className={`sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 backdrop-blur-2xl transition-all ${scrolled ? "shadow-[0_10px_35px_rgba(16,35,63,.07)]" : ""}`}>
         <div className={`shell flex items-center justify-between transition-all ${scrolled ? "h-16" : "h-20"}`}>
-          <Link href="/" className="flex items-center gap-2 font-[var(--font-display)] text-xl font-extrabold tracking-tight" aria-label={`${business.businessName} home`}>
+          <Link href="/" className="flex items-center gap-2 font-[var(--font-display)] text-base font-extrabold tracking-tight sm:text-lg" aria-label={`${business.businessName} home`}>
             <span className="grid size-10 place-items-center bg-[var(--primary)] text-white"><Sparkles size={19} /></span>
             {business.logoText}<span className="text-[var(--secondary)]">.</span>
           </Link>
@@ -35,8 +34,8 @@ export default function Header() {
             })}
           </nav>
           <div className="hidden items-center gap-4 lg:flex">
-            <a href={`tel:${business.phoneHref}`} className="flex items-center gap-2 text-sm font-bold"><Phone size={16} className="text-[var(--secondary)]" />{business.phone}</a>
-            <Link href="/contact#quote" className="button-primary">Get a Free Quote</Link>
+            {business.phoneHref && <a href={`tel:${business.phoneHref}`} className="flex items-center gap-2 text-sm font-bold"><Phone size={16} className="text-[var(--secondary)]" />{business.phone}</a>}
+            <Link href="/contact#quote" className="button-primary">Book a Consultation</Link>
           </div>
           <button className="grid size-11 place-items-center border border-slate-300 lg:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "Close menu" : "Open menu"}>{open ? <X /> : <Menu />}</button>
         </div>
@@ -46,9 +45,8 @@ export default function Header() {
           </div>
         </nav>}
       </header>
-      <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-slate-300 bg-white/95 p-2 shadow-2xl backdrop-blur md:hidden">
-        <a href={`tel:${business.phoneHref}`} className="button-secondary min-h-11"><Phone size={17} />Call</a>
-        <Link href="/contact#quote" className="button-primary min-h-11">Get Quote</Link>
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-300 bg-white/95 p-2 shadow-2xl backdrop-blur md:hidden">
+        <Link href="/contact#quote" className="button-primary min-h-11 w-full">Book a Cleaning Consultation</Link>
       </div>
     </>
   );

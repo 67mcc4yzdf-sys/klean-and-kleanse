@@ -5,7 +5,7 @@ import Reveal from "./Reveal";
 
 export default function WhyChooseUs() {
   return <section className="section"><div className="shell grid items-center gap-12 lg:grid-cols-2">
-    <Reveal><div className="relative border-y border-slate-700 bg-ink p-8 text-white sm:p-12">
+    <Reveal><div className="relative overflow-hidden rounded-3xl border border-slate-700 bg-ink p-8 text-white shadow-xl sm:p-12">
       <div className="absolute left-0 top-0 h-full w-1 bg-[var(--secondary)]" />
       <span className="mb-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.15em] text-sky-200"><Heart size={14} />{business.whyChooseUs.eyebrow}</span>
       <h2 className="font-[var(--font-display)] text-3xl font-extrabold leading-tight tracking-[-.035em] sm:text-4xl">{business.whyChooseUs.title}</h2>

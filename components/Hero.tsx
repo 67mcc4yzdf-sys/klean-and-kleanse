@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Check, Phone, Sparkles, Star } from "lucide-react";
+import { Check, Sparkles, Star } from "lucide-react";
 import { business } from "@/lib/business";
 
 export default function Hero() {
@@ -17,13 +17,13 @@ export default function Hero() {
         <div className="max-w-2xl">
           <motion.span initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="eyebrow"><Sparkles size={14} />{business.hero.eyebrow}</motion.span>
           <motion.h1 initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08, duration: .6 }} className="font-[var(--font-display)] text-4xl font-extrabold leading-[1.06] tracking-[-.05em] text-ink sm:text-5xl lg:text-6xl">
-            {business.hero.titlePrefix} <span className="text-[var(--primary)]">{business.city}</span>
+            {business.hero.title}
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16 }} className="mt-6 max-w-xl text-xl font-semibold leading-8 text-slate-700">{business.hero.lead}</motion.p>
           <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .2 }} className="mt-4 max-w-xl leading-7 text-slate-600">{business.hero.supportingText}</motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .28 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/contact#quote" className="button-primary">Get a Free Quote <span aria-hidden>→</span></Link>
-            <a href={`tel:${business.phoneHref}`} className="button-secondary"><Phone size={18} />Call Now</a>
+            <Link href="/contact#quote" className="button-primary">Book Your Cleaning Consultation <span aria-hidden>→</span></Link>
+            <Link href="/services" className="button-secondary">View Services</Link>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .4 }} className="mt-8 flex flex-wrap gap-x-5 gap-y-3">
             {business.trustBadges.slice(1, 4).map((item) => <span key={item} className="flex items-center gap-2 text-sm font-bold text-slate-600"><span className="grid size-5 place-items-center rounded-full bg-emerald-100 text-emerald-700 shadow-sm"><Check size={12} strokeWidth={3} /></span>{item}</span>)}
