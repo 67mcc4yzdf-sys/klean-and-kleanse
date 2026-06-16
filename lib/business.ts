@@ -26,11 +26,15 @@ export type BusinessConfig = {
   businessName: string;
   logoText: string;
   tagline: string;
+  mainHeadline: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
   city: string;
   country: string;
   phone: string;
   phoneHref: string;
   email: string;
+  instagram: string;
   primaryColor: string;
   secondaryColor: string;
   seoDescription: string;
@@ -73,9 +77,12 @@ export type BusinessConfig = {
     heading: string;
     explanation: string;
     recurringNote: string;
+    items: { label: string; price: string }[];
+    footer: string;
   };
   addOns: string[];
   cleaningPlans: { title: string; text: string }[];
+  scheduleOptions: string[];
   compassionate: {
     title: string;
     description: string;
@@ -105,6 +112,7 @@ export type BusinessConfig = {
     team: string;
     before: string;
     after: string;
+    gallery: string[];
   };
   socialLinks: { label: string; href: string }[];
   legal: {
@@ -145,8 +153,11 @@ function validateBusinessConfig<T extends BusinessConfig>(config: T): T {
   }
   if (!config.addOns.length) throw new Error("At least one optional add-on is required.");
 
-  for (const [field, path] of Object.entries(config.images)) {
-    if (!path.startsWith("/")) throw new Error(`Image path "${field}" must begin with "/".`);
+  for (const [field, value] of Object.entries(config.images)) {
+    const paths = Array.isArray(value) ? value : [value];
+    for (const path of paths) {
+      if (!path.startsWith("/")) throw new Error(`Image path "${field}" must begin with "/".`);
+    }
   }
 
   const proofValues = [config.reviewProof.rating, config.reviewProof.reviewCount, config.reviewProof.platform];
@@ -162,82 +173,93 @@ function validateBusinessConfig<T extends BusinessConfig>(config: T): T {
 }
 
 export const business = validateBusinessConfig({
-  businessName: "Klean & Kleanse Cleaning Services",
-  logoText: "Klean & Kleanse",
-  tagline: "We Clean With Care",
-  city: "Birmingham",
+  businessName: "Sparkle Cleaning Services",
+  logoText: "Sparkle",
+  tagline: "Clean Home, Happy Home",
+  mainHeadline: "A Clean Space Makes a Happy Place",
+  ctaPrimary: "Get a Free Quote",
+  ctaSecondary: "Call Now",
+  city: "Halifax",
   country: "United Kingdom",
-  phone: "+44 7928 944066",
-  phoneHref: "+447928944066",
-  email: "",
-  primaryColor: "#14233D",
-  secondaryColor: "#C7A35A",
-  seoDescription: "Friendly, reliable and compassionate cleaning services for homes, businesses, B&Bs, families and elderly clients.",
+  phone: "07954024241",
+  phoneHref: "+447954024241",
+  email: "sparklecleaningservices@gmail.com",
+  instagram: "@sparkle.cleaning.servicess",
+  primaryColor: "#C86F91",
+  secondaryColor: "#F6B8C9",
+  seoDescription: "Friendly, reliable cleaning services for fresh, comfortable homes and business spaces by Sparkle Cleaning Services.",
   hero: {
-    eyebrow: "We Clean With Care",
-    title: "Professional Cleaning With Care",
-    lead: "Friendly, reliable cleaning services for homes, businesses, B&Bs, families, and elderly clients.",
-    supportingText: "From regular support to deep, tenancy, builder and bespoke cleans, every service is planned around your property and priorities.",
-    reassurance: "Established in 2021. Caring service backed by 8+ years of experience.",
+    eyebrow: "Clean Home, Happy Home",
+    title: "A Clean Space Makes a Happy Place",
+    lead: "Friendly, reliable cleaning services for fresh, comfortable spaces you can enjoy.",
+    supportingText: "Standard, deep, end of tenancy and commercial cleaning delivered with care, detail and a warm local touch.",
+    reassurance: "Reliable, friendly and detail-focused every time.",
   },
   about: {
-    heroTitle: "Professional standards, delivered with genuine care",
-    heroDescription: "Klean & Kleanse supports households, elderly clients, families, B&Bs and businesses with reliable cleaning shaped around real life.",
-    storyTitle: "Care is part of the service",
-    story: "Established in 2021 and backed by more than eight years of cleaning experience, Klean & Kleanse combines professional standards with a warm, respectful approach.",
-    mission: "Our purpose is to make homes and workplaces feel calmer, safer and easier to manage through dependable cleaning and thoughtful personal service.",
-    ownerHeading: "A caring, dependable cleaning service",
-    ownerText: "Add the founder’s name, photograph and personal story here when supplied. This section is ready for a genuine introduction rather than a generic team profile.",
+    heroTitle: "Fresh, comfortable spaces with a friendly local touch",
+    heroDescription: "At Sparkle Cleaning Services, we take pride in creating clean, fresh, and comfortable spaces for you to enjoy.",
+    storyTitle: "Clean spaces, happy places",
+    story: "At Sparkle Cleaning Services, we take pride in creating clean, fresh, and comfortable spaces for you to enjoy. Reliable, friendly, and detail-focused every time.",
+    mission: "Our goal is to make everyday spaces feel calmer, brighter and easier to enjoy through dependable cleaning and thoughtful service.",
+    ownerHeading: "A friendly, trustworthy cleaning service",
+    ownerText: "Warm, professional support for homes and local businesses, with flexible appointments and attention to the details that make a space feel cared for.",
   },
   servicesPage: {
-    heroTitle: "The right level of care for every space",
-    heroDescription: "Flexible domestic, support, commercial, B&B, tenancy, builder, event and bespoke cleaning services.",
+    heroTitle: "Cleaning services for fresh, happy spaces",
+    heroDescription: "Choose from standard, deep, end of tenancy and commercial cleaning services tailored to your needs.",
     guidanceTitle: "Not sure which clean is right?",
-    guidanceText: "Tell us about the property, what support you need and how often. We will recommend a practical service rather than forcing your needs into a fixed package.",
+    guidanceText: "Tell us about your space, priorities and preferred schedule. We will recommend the service that fits best.",
   },
   whyChooseUs: {
-    eyebrow: "Why Klean & Kleanse",
-    title: "Trust, consistency and care in every clean.",
-    description: "A friendly, professional service that respects the people, routines and spaces behind every booking.",
-    differentiator: "Fully insured and DBS checked, with more than eight years of hands-on cleaning experience.",
-    signatureTitle: "We Clean With Care",
-    signatureText: "Professional service with a compassionate approach.",
-    reasons: ["Fully insured", "DBS checked", "8+ years experience", "Established in 2021", "Friendly and reliable", "Flexible cleaning plans"],
+    eyebrow: "Why choose us?",
+    title: "A reassuring clean from people who care.",
+    description: "Friendly, professional cleaning with flexible appointments, careful details and a focus on leaving every space fresh and comfortable.",
+    differentiator: "Products and equipment are provided, so you can simply book your clean and relax.",
+    signatureTitle: "Clean Home, Happy Home",
+    signatureText: "Premium local cleaning with a warm, trustworthy feel.",
+    reasons: ["Reliable & trustworthy", "Attention to detail", "Friendly & professional", "Flexible appointments", "Satisfaction guaranteed", "Products & equipment provided"],
   },
   servicePromise: {
-    title: "Clear communication from consultation to clean.",
-    text: "Priorities, access and expectations are discussed before work begins, with a practical plan tailored to each client.",
+    title: "Free quotes available.",
+    text: "Tell us what you need and we will recommend a practical cleaning service with clear next steps.",
   },
   pricing: {
-    heading: "A consultation built around your needs",
-    explanation: "Quotes reflect the property, condition, cleaning type, frequency and any special support required. The scope is agreed before the service.",
-    recurringNote: "Choose from one-off, daily, weekly, bi-weekly or monthly cleaning plans.",
+    heading: "Simple starting prices",
+    explanation: "Prices start from the guide below and may vary depending on property size, condition and cleaning requirements.",
+    recurringNote: "Free quotes available!",
+    items: [
+      { label: "Standard Clean", price: "From £20ph" },
+      { label: "Deep Clean", price: "From £25ph" },
+      { label: "End of Tenancy Clean", price: "From £120+" },
+      { label: "Commercial Cleaning", price: "Contact for a free quote" },
+    ],
+    footer: "Free quotes available!",
   },
-  addOns: ["Inside appliances", "Inside cupboards", "Interior windows", "Bed and linen change", "Extra priority areas"],
+  addOns: ["Inside appliances", "Inside cupboards", "Interior windows", "Priority rooms", "Extra detail areas"],
   cleaningPlans: [
-    { title: "One-off", text: "A single clean for a reset, occasion, move or specific need." },
-    { title: "Daily", text: "Frequent support for busy homes, B&Bs and commercial spaces." },
-    { title: "Weekly", text: "Consistent care to keep your property comfortable and presentable." },
-    { title: "Bi-weekly", text: "Reliable maintenance every two weeks." },
-    { title: "Monthly", text: "A regular deeper refresh for lower-frequency needs." },
+    { title: "Standard Clean", text: "Regular upkeep for fresh, comfortable homes." },
+    { title: "Deep Clean", text: "A thorough reset for hard-to-reach places." },
+    { title: "End of Tenancy", text: "Move-out cleaning for spotless handovers." },
+    { title: "Commercial", text: "Reliable cleans for offices, shops and workspaces." },
   ],
+  scheduleOptions: ["One-off clean", "Weekly", "Fortnightly", "Monthly", "End of tenancy date", "Commercial schedule", "Not sure yet"],
   compassionate: {
-    title: "Cleaning support that understands real life",
-    description: "Patient, respectful help for elderly clients, families welcoming a new baby, and busy households who need more than a rushed surface clean.",
-    statement: "Because a clean home brings comfort, calm and care.",
-    audiences: ["Elderly clients needing extra help", "Families with new babies", "Busy households needing peace of mind"],
+    title: "A clean space makes a happy place",
+    description: "Friendly, reliable cleaning services for homes and businesses that want a fresh, comfortable finish.",
+    statement: "Just sit back and relax.",
+    audiences: ["Busy homes", "Fresh starts", "Local businesses"],
   },
   process: [
-    { title: "Request your free quote", text: "Tell us about your space and what you need." },
-    { title: "Choose your cleaning plan", text: "We’ll help you select the right service and schedule." },
-    { title: "Enjoy a cleaner space", text: "Come back to a home or workplace that feels refreshed." },
+    { title: "Request your free quote", text: "Tell us about your space, priorities and preferred timing." },
+    { title: "Choose your cleaning service", text: "Pick the clean that suits your home, move or business." },
+    { title: "Relax while we handle the cleaning", text: "Enjoy a fresh, comfortable space without the stress." },
   ],
   reviewProof: {
     rating: undefined,
     reviewCount: undefined,
     platform: undefined,
-    fallbackLabel: "Fully insured & DBS checked",
-    detail: "Professional care you can trust",
+    fallbackLabel: "Friendly local cleaning",
+    detail: "Fresh, reliable service you can trust",
     href: "/about",
     // Add verified values for the real business, for example:
     // rating: "4.9",
@@ -249,38 +271,36 @@ export const business = validateBusinessConfig({
   },
   serviceAreas: ["Birmingham"],
   services: [
-    { title: "Compassionate Support Cleans", description: "Respectful, patient cleaning support for elderly clients, new parents and households needing an extra helping hand.", icon: "home", bestFor: "Clients who value calm, considerate support", planningNote: "Priorities and routines are discussed sensitively before the clean.", pricingNote: "Consultation-based quote", recurringAvailable: true, included: ["Agreed priority rooms", "Kitchen and bathroom care", "Dusting and floor care", "Respectful practical support"] },
-    { title: "Deep Domestic Cleans", description: "A thorough home reset focused on buildup, details and frequently missed areas.", icon: "sparkles", bestFor: "First visits, seasonal resets and homes needing extra attention", planningNote: "Allow additional time for detailed work throughout the property.", pricingNote: "Quoted by size and condition", recurringAvailable: false, included: ["Detailed kitchen and bathrooms", "Skirting boards and edges", "Fixtures and touchpoints", "Thorough floor care"] },
-    { title: "Spring Cleans", description: "A fresh, detailed clean designed to brighten the home and reset key rooms.", icon: "sparkles", bestFor: "Seasonal refreshes", planningNote: "Choose priority rooms and optional extras during consultation.", pricingNote: "Custom one-off quote", recurringAvailable: false, included: ["Surface and detail dusting", "Kitchen and bathroom refresh", "Floors throughout", "Selected priority areas"] },
-    { title: "Basic Cleans", description: "Reliable routine cleaning for the essential areas that keep a home comfortable.", icon: "home", bestFor: "Regular household maintenance", planningNote: "Available across flexible recurring schedules.", pricingNote: "Quoted by property and frequency", recurringAvailable: true, included: ["Kitchen surfaces", "Bathroom clean", "Dusting", "Vacuuming and mopping"] },
-    { title: "Pre / End of Tenancy Cleans", description: "Detailed cleaning before moving in or after moving out, prepared around the property condition.", icon: "truck", bestFor: "Tenants, landlords and property managers", planningNote: "Empty-property access and appliance requirements are confirmed first.", pricingNote: "Property-specific quote", recurringAvailable: false, included: ["Empty cupboards", "Kitchen and bathrooms", "Skirting and floors", "Appliance options"] },
-    { title: "Deluxe Cleans", description: "An enhanced, detail-led clean with extra time for finishing touches and priority areas.", icon: "sparkles", bestFor: "Clients wanting a more comprehensive result", planningNote: "Scope is tailored during consultation.", pricingNote: "Bespoke quote", recurringAvailable: true, included: ["Detailed standard clean", "Extra priority areas", "Finishing touches", "Selected add-ons"] },
-    { title: "Business & Commercial Cleans", description: "Professional cleaning for offices, workplaces and customer-facing premises.", icon: "building", bestFor: "Businesses needing dependable scheduled care", planningNote: "Cleaning can be planned around operating hours.", pricingNote: "Site consultation required", recurringAvailable: true, included: ["Work and reception areas", "Washrooms and kitchens", "Floors and touchpoints", "Agreed waste handling"] },
-    { title: "Bespoke Cleans", description: "A flexible service designed around unusual requirements, priorities or circumstances.", icon: "key", bestFor: "Clients whose needs do not fit a standard package", planningNote: "Tell us what outcome you need and we will shape the scope.", pricingNote: "Consultation-based quote", recurringAvailable: true, included: ["Custom priorities", "Flexible scope", "Agreed products", "One-off or ongoing plans"] },
-    { title: "B&B Cleans", description: "Consistent guest-ready cleaning for welcoming rooms and shared spaces.", icon: "key", bestFor: "B&B owners and accommodation providers", planningNote: "Turnaround timing and linen requirements are agreed in advance.", pricingNote: "Quoted by rooms and frequency", recurringAvailable: true, included: ["Guest room refresh", "Bathrooms", "Shared areas", "Linen options"] },
-    { title: "Builders Cleans", description: "Careful removal of fine dust and residue after building or renovation work.", icon: "hardHat", bestFor: "Recently completed projects", planningNote: "The site must be safe and ready for cleaning.", pricingNote: "Site-specific quote", recurringAvailable: false, included: ["Fine dust removal", "Fixtures and surfaces", "Interior glass", "Final floor clean"] },
-    { title: "Event Cleans", description: "Pre-event preparation or post-event cleaning to help spaces recover quickly.", icon: "building", bestFor: "Private and business events", planningNote: "Timing, access and waste requirements are agreed beforehand.", pricingNote: "Event-specific quote", recurringAvailable: false, included: ["Priority area cleaning", "Kitchen and washrooms", "Floor care", "Agreed waste removal"] },
+    { title: "Standard Clean", description: "Perfect for regular upkeep of your home, including dusting, hoovering, mopping, bathroom cleaning, and kitchen cleaning.", icon: "home", bestFor: "Regular home upkeep", planningNote: "Ideal for weekly, fortnightly or routine appointments.", pricingNote: "From £20ph", recurringAvailable: true, included: ["Dusting", "Hoovering", "Mopping", "Bathroom and kitchen cleaning"] },
+    { title: "Deep Clean", description: "A more thorough clean for those hard-to-reach places. Ideal for seasonal cleans or a fresh start.", icon: "sparkles", bestFor: "Seasonal cleans and fresh starts", planningNote: "Allow extra time for detail work and priority areas.", pricingNote: "From £25ph", recurringAvailable: false, included: ["Detailed surfaces", "Hard-to-reach areas", "Kitchen and bathroom detail", "Floor care"] },
+    { title: "End of Tenancy Clean", description: "Moving out? We’ll leave the property spotless and ready for the next person.", icon: "key", bestFor: "Tenants, landlords and move-outs", planningNote: "Best for empty properties or move-out handovers.", pricingNote: "From £120+", recurringAvailable: false, included: ["Kitchen and bathrooms", "Cupboards and surfaces", "Floors", "Move-out finishing touches"] },
+    { title: "Commercial Cleaning", description: "Reliable cleaning for offices, shops, and other business spaces. Tailored to your needs.", icon: "building", bestFor: "Offices, shops and business spaces", planningNote: "Cleaning can be planned around your opening hours.", pricingNote: "Contact for a free quote", recurringAvailable: true, included: ["Work areas", "Washrooms", "Floors", "Agreed touchpoints"] },
   ],
-  trustBadges: ["Fully insured", "DBS checked", "8+ years experience", "Established 2021"],
-  reviews: [] as BusinessConfig["reviews"],
+  trustBadges: ["Reliable & trustworthy", "Flexible appointments", "Satisfaction guaranteed"],
+  reviews: [
+    { quote: "Sparkle Cleaning Services left my home feeling fresh and calm. Friendly, reliable and really thorough.", name: "Emma", area: "Halifax", service: "Standard Clean" },
+    { quote: "The deep clean made such a difference. Every room felt brighter and the attention to detail was excellent.", name: "Rachel", area: "West Yorkshire", service: "Deep Clean" },
+    { quote: "Great communication and a spotless finish for our move-out clean. I would happily book again.", name: "Sophie", area: "Halifax", service: "End of Tenancy Clean" },
+  ],
   faqs: [
-    { question: "Do you bring your own cleaning supplies?", answer: "Yes. We can arrive with the standard supplies and equipment needed for your service. Tell us about product preferences or sensitivities when requesting your quote." },
+    { question: "Do you bring your own cleaning supplies?", answer: "Yes. Products and equipment are provided. Tell us about product preferences or sensitivities when requesting your quote." },
     { question: "Do I need to be home during the cleaning?", answer: "No. Many clients arrange secure access and return to a freshly cleaned space. We will confirm access details with you before the visit." },
-    { question: "Can I book recurring cleaning?", answer: "Yes. One-off, daily, weekly, bi-weekly and monthly plans are available, depending on your property and requirements." },
+    { question: "Can I book recurring cleaning?", answer: "Yes. Flexible appointments are available depending on your property and requirements." },
     { question: "How do I get a quote?", answer: "Complete the short quote form or call us. We will ask a few questions about your space and cleaning needs before confirming pricing." },
-    { question: "Do you support elderly clients and new parents?", answer: "Yes. Compassionate support cleans are designed for clients who need patient, respectful help and a plan shaped around their circumstances." },
+    { question: "Do you clean commercial spaces?", answer: "Yes. Commercial cleaning is available for offices, shops and other business spaces, tailored to your needs." },
     { question: "What if I’m not satisfied?", answer: "Please contact us promptly so we can understand the concern and work with you toward a practical resolution." },
   ],
-  businessHours: ["Consultation hours to be confirmed"],
+  businessHours: ["Flexible appointments available"],
   images: {
-    hero: "/images/freshnest-hero.jpg",
-    team: "/images/freshnest-team-v2.png",
-    before: "/images/kitchen-before.jpg",
-    after: "/images/kitchen-after.jpg",
+    hero: "/images/cleaning-1.jpg",
+    team: "/images/cleaning-2.jpg",
+    before: "/images/cleaning-3.jpg",
+    after: "/images/cleaning-4.jpg",
+    gallery: ["/images/cleaning-1.jpg", "/images/cleaning-2.jpg", "/images/cleaning-3.jpg", "/images/cleaning-4.jpg"],
   },
-  socialLinks: [] as BusinessConfig["socialLinks"],
+  socialLinks: [{ label: "Instagram", href: "https://www.instagram.com/sparkle.cleaning.servicess" }],
   legal: {
-    privacyContact: "",
+    privacyContact: "sparklecleaningservices@gmail.com",
     lastUpdated: "June 15, 2026",
   },
 } satisfies BusinessConfig);

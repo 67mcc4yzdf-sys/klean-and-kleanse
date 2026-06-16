@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: `${business.businessName} | Professional Cleaning With Care`,
+  title: `${business.businessName} | ${business.tagline}`,
   description: business.seoDescription,
 };
 

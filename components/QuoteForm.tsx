@@ -63,7 +63,7 @@ export default function QuoteForm({ initialService = "" }: { initialService?: st
       <div className="mt-4 grid gap-5 sm:grid-cols-2">
         <label className="text-sm font-bold">Type of cleaning<select required name="service" defaultValue={validInitialService} className="field"><option value="">Select a service</option>{business.services.map(s => <option key={s.title} value={s.title}>{s.title}</option>)}</select></label>
         <label className="text-sm font-bold">Property type<input required name="propertyType" maxLength={100} placeholder="e.g. house, flat, B&B, office" className="field" /></label>
-        <label className="text-sm font-bold sm:col-span-2">Preferred schedule<select required name="frequency" defaultValue="" className="field"><option value="">Select a schedule</option>{business.cleaningPlans.map(plan => <option key={plan.title}>{plan.title}</option>)}</select></label>
+        <label className="text-sm font-bold sm:col-span-2">Preferred schedule<select required name="frequency" defaultValue="" className="field"><option value="">Select a schedule</option>{business.scheduleOptions.map(option => <option key={option}>{option}</option>)}</select></label>
       </div>
     </div>
     <p className="mb-4 text-xs font-extrabold uppercase tracking-[.14em] text-[var(--primary)]">2. Where should we send the quote?</p>
